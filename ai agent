@@ -1,0 +1,97 @@
+import asyncio
+import os
+from dotenv import load_dotenv
+
+from browser_use import Agent, BrowserSession
+from browser_use.llm.google.chat import ChatGoogle
+
+# Load environment variables from .env file
+load_dotenv()
+
+
+async def run_browser_agent():
+    """
+    Runs a browser-based AI agent powered by Gemini.
+    The agent opens a real browser, performs a Google search,
+    and extracts information from the results.
+    """
+
+    # Fetch Google API key from environment
+    api_key = os.getenv("GOOGLE_API_KEY")
+
+    if not api_key:
+        print("❌ GOOGLE_API_KEY not found.")
+        print("Create a .env file and add:")
+        print("GOOGLE_API_KEY=your_api_key_here")
+        print("\nGet your API key from: https://aistudio.google.com/app/apikey")
+        return
+
+    # Define the task for the AI agent
+    task = """
+    Open google.com
+    Search for 'GDG Cloud New Delhi'
+    Identify the first search result
+    Return only its title text
+    """
+
+    print("🤖 Browser AI Agent")
+    print("=" * 50)
+    print("📌 Task Description:")
+    print(task.strip())
+    print("=" * 50)
+    print("\n🚀 Launching agent...\n")
+
+    # Initialize Gemini LLM
+    llm = ChatGoogle(
+        model="gemini-2.0-flash",
+        api_key=api_key,
+        temperature=0.6,
+    )
+
+    # Start a real browser session (Chromium)
+    browser_session = BrowserSession()
+
+    # Create the agent with task + LLM + browser
+    agent = Agent(
+        task=task,
+        llm=llm,
+        browser_session=browser_session,
+    )
+
+    # Execute the task
+    result = await agent.run()
+
+    print("\n" + "=" * 50)
+    print("✅ Agent Execution Complete")
+    print("=" * 50)
+
+    # Robust result handling (supports multiple browser-use versions)
+    try:
+        if hasattr(result, "final_result"):
+            final_output = (
+                result.final_result()
+                if callable(result.final_result)
+                else result.final_result
+            )
+            print("\n📄 Extracted Result:")
+            print(final_output)
+
+        elif hasattr(result, "all_results") and result.all_results:
+            last_step = result.all_results[-1]
+            if hasattr(last_step, "extracted_content"):
+                print("\n📄 Extracted Result:")
+                print(last_step.extracted_content)
+
+        else:
+            print("\n📄 Raw Result:")
+            print(result)
+    except Exception as e:
+        print("\n⚠️ Could not extract final result cleanly.")
+        print("Error:", e)
+        print("Raw output:", result)
+
+    print("\n✨ Try changing the task to extract more data!")
+
+
+if __name__ == "__main__":
+    asyncio.run(run_browser_agent())
