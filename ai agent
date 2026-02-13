@@ -20,7 +20,7 @@ async def run_browser_agent():
     api_key = os.getenv("GOOGLE_API_KEY")
 
     if not api_key:
-        print("❌ GOOGLE_API_KEY not found.")
+        print(" GOOGLE_API_KEY not found.")
         print("Create a .env file and add:")
         print("GOOGLE_API_KEY=your_api_key_here")
         print("\nGet your API key from: https://aistudio.google.com/app/apikey")
@@ -36,7 +36,7 @@ async def run_browser_agent():
 
     print("🤖 Browser AI Agent")
     print("=" * 50)
-    print("📌 Task Description:")
+    print(" Task Description:")
     print(task.strip())
     print("=" * 50)
     print("\n🚀 Launching agent...\n")
@@ -62,7 +62,7 @@ async def run_browser_agent():
     result = await agent.run()
 
     print("\n" + "=" * 50)
-    print("✅ Agent Execution Complete")
+    print(" Agent Execution Complete")
     print("=" * 50)
 
     # Robust result handling (supports multiple browser-use versions)
@@ -73,24 +73,24 @@ async def run_browser_agent():
                 if callable(result.final_result)
                 else result.final_result
             )
-            print("\n📄 Extracted Result:")
+            print("\n Extracted Result:")
             print(final_output)
 
         elif hasattr(result, "all_results") and result.all_results:
             last_step = result.all_results[-1]
             if hasattr(last_step, "extracted_content"):
-                print("\n📄 Extracted Result:")
+                print("\n Extracted Result:")
                 print(last_step.extracted_content)
 
         else:
-            print("\n📄 Raw Result:")
+            print("\n Raw Result:")
             print(result)
     except Exception as e:
-        print("\n⚠️ Could not extract final result cleanly.")
+        print("\n Could not extract final result cleanly.")
         print("Error:", e)
         print("Raw output:", result)
 
-    print("\n✨ Try changing the task to extract more data!")
+    print("\n Try changing the task to extract more data!")
 
 
 if __name__ == "__main__":
