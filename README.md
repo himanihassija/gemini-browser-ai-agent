@@ -2,7 +2,6 @@
 
 A browser-based AI agent built using Python and Google Gemini that can autonomously control a real Chromium browser to perform web-based tasks such as searching, navigating pages, and extracting information.
 
-This project was built as part of a GDG Cloud hands-on workshop to understand the fundamentals of agentic AI systems, browser automation, and LLM-driven task execution.
 
 ## Features
 
@@ -72,7 +71,4 @@ The task can be modified directly in the code to perform more complex browser-ba
 - Error handling and retry mechanisms
 - Logging and performance tracking
 
-## Acknowledgements
-
-This project was developed during a GDG Cloud workshop for educational and learning purposes.
 
